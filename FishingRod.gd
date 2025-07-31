@@ -2,9 +2,15 @@ extends Node2D
 
 @onready var line: Line2D = $Line2D
 @onready var bobber: Node2D = $bobber
+@onready var camera: Camera2D = $"../../Camera2D"
+
 
 const WATER_LEVEL := 32.0
 const ROD_TIP_POSITION := Vector2(14, -2)
+
+# --- Signals ---
+signal cast_started
+signal reeling_started
 
 # --- Casting Variables ---
 var is_casting = false
@@ -31,7 +37,7 @@ func _process(delta):
 	if reeling_in:
 		# Reeling motion
 		var target = Vector2(-16, 0)
-		bobber.position = bobber.position.move_toward(target, 300 * delta)
+		bobber.position = bobber.position.move_toward(target, REEL_SPEED * delta)
 		line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
 
 		# When close enough to rod, reset
@@ -66,6 +72,7 @@ func cast(facing_right: bool):
 	if is_casting:
 		return
 
+	cast_started.emit()
 	is_casting = true
 	caught = false
 	fish_on_line = false
@@ -120,6 +127,7 @@ func reset_fishing():
 	bobber.visible = false
 
 func start_reeling_in():
+	reeling_started.emit()
 	reeling_in = true
 	floating = false  # Stop floating motion
 	velocity = Vector2.ZERO  # Stop arc motion

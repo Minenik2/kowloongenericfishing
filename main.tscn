@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://ccyl48wej715s"]
+[gd_scene load_steps=14 format=4 uid="uid://ccyl48wej715s"]
 
 [ext_resource type="Texture2D" uid="uid://dne7smfeecg0g" path="res://art/tileset.png" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://dui8oveoikvf4" path="res://art/water.png" id="2_0xm2m"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cyowslsy6o8dv" path="res://art/rod.png" id="5_lquwl"]
 [ext_resource type="Texture2D" uid="uid://dxsl5mayrktsb" path="res://art/bober.png" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://co23kbh2eea1y" path="res://FishingRod.gd" id="6_272bh"]
+[ext_resource type="Script" uid="uid://c5o328most3lp" path="res://camera_2d.gd" id="9_kek77"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0xm2m"]
 texture = ExtResource("1_ig7tw")
@@ -63,6 +64,13 @@ position = Vector2(-14.5, -1)
 width = 1.0
 
 [node name="bobber" type="Sprite2D" parent="player/rod"]
-position = Vector2(-14.5, 2.25)
+position = Vector2(-14, 2.25)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_7mycd")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(79.75, 61.5)
+script = ExtResource("9_kek77")
+
+[connection signal="cast_started" from="player/rod" to="Camera2D" method="_on_cast_started"]
+[connection signal="reeling_started" from="player/rod" to="Camera2D" method="_on_reeling_started"]
