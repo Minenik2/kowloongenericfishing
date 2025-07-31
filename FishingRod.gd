@@ -3,41 +3,54 @@ extends Node2D
 @onready var line: Line2D = $Line2D
 @onready var bobber: Node2D = $bobber
 
-var water_level := 32.0
+const WATER_LEVEL := 32.0
+const ROD_TIP_POSITION := Vector2(14, -2)
+
+# --- Casting Variables ---
+var is_casting = false
+var velocity = Vector2.ZERO
+const GRAVITY := 300.0
+var cast_power_base = Vector2(60, -100)
+
+# --- Floating Variables ---
 var floating := false
 var float_timer := 0.0
-var float_amplitude := 2.0
-var float_speed := 4.0
+const FLOAT_AMPLITUDE := 2.0
+const FLOAT_SPEED := 4.0
 var base_water_pos := Vector2.ZERO
 
-var is_casting = false
-var fish_on_line = false
-var velocity = Vector2.ZERO
-var gravity = 300.0
-
-var cast_power_base = Vector2(60, -100)  # Base force
-var catch_window = 0.8
-
 var caught = false
+var fish_on_line = false
+var catch_window = 0.8 # window to catch the fish
 
-var lineAdust = Vector2(14, -2) # adjust the line on the bobber
-
-var reeling := false
-var reel_speed := 200.0  # Pixels per second
+# --- Reeling Variables ---
+var reeling_in := false
+const REEL_SPEED := 200.0
 
 func _process(delta):
+	if reeling_in:
+		# Reeling motion
+		var target = Vector2(-16, 0)
+		bobber.position = bobber.position.move_toward(target, 300 * delta)
+		line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
+
+		# When close enough to rod, reset
+		if bobber.position.distance_to(target) < 2:
+			reset_fishing()
+		return  # Stop all other logic during reeling
+
 	if is_casting and not fish_on_line:
 		if not floating:
 			# Simulate arc
-			velocity.y += gravity * delta
+			velocity.y += GRAVITY * delta
 			bobber.position += velocity * delta
 
 			# Update line points
-			line.points = [Vector2.ZERO, bobber.position + lineAdust]
+			line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
 
 			# Land on water
-			if bobber.position.y >= water_level:
-				bobber.position.y = water_level
+			if bobber.position.y >= WATER_LEVEL:
+				bobber.position.y = WATER_LEVEL
 				velocity = Vector2.ZERO
 				floating = true
 				base_water_pos = bobber.position
@@ -45,27 +58,9 @@ func _process(delta):
 		else:
 			# Floating motion (gentle sine wave)
 			float_timer += delta
-			var bob_offset = sin(float_timer * float_speed) * float_amplitude
+			var bob_offset = sin(float_timer * FLOAT_SPEED) * FLOAT_AMPLITUDE
 			bobber.position.y = base_water_pos.y + bob_offset
-			line.points = [Vector2.ZERO, bobber.position + lineAdust]
-
-	if reeling:
-		var target_pos = Vector2(-16, 0)
-		var direction = (target_pos - bobber.position).normalized()
-		var distance = (target_pos - bobber.position).length()
-
-		# Move bobber towards rod
-		var move_amount = min(reel_speed * delta, distance)
-		bobber.position += direction * move_amount
-
-		# Update line
-		line.points = [Vector2.ZERO, bobber.position + lineAdust]
-
-		# Check if it's close enough to reset
-		if distance < 4.0:
-			reeling = false
-			reset_fishing()
-		return  # Don't run other fishing logic during reeling
+			line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
 
 func cast(facing_right: bool):
 	if is_casting:
@@ -82,7 +77,7 @@ func cast(facing_right: bool):
 	var direction_multiplier = 1 if facing_right else -1
 	velocity = cast_power_base * Vector2(direction_multiplier, 1)
 
-	line.points = [Vector2.ZERO, bobber.position + lineAdust]
+	line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
 
 func fish_bite_delay():
 	var wait_time = randf_range(1.0, 3.0)
@@ -109,22 +104,22 @@ func try_catch():
 		print("You caught something!")
 		fish_on_line = false
 		caught = true
-		# Reward logic here
-		start_reeling()
+		start_reeling_in()
 	elif floating and not fish_on_line:
 		print("You reeled in the line.")
-		start_reeling()
+		start_reeling_in()
 
 func reset_fishing():
+	reeling_in = false
 	floating = false
 	float_timer = 0.0
 	is_casting = false
 	fish_on_line = false
 	velocity = Vector2.ZERO
-	bobber.visible = false
 	line.clear_points()
+	bobber.visible = false
 
-func start_reeling():
-	reeling = true
-	floating = false
-	velocity = Vector2.ZERO
+func start_reeling_in():
+	reeling_in = true
+	floating = false  # Stop floating motion
+	velocity = Vector2.ZERO  # Stop arc motion
