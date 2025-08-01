@@ -5,12 +5,14 @@ extends Node2D
 @onready var camera: Camera2D = $"../../Camera2D"
 
 
-const WATER_LEVEL := 32.0
+const WATER_LEVEL := 264.0
 const ROD_TIP_POSITION := Vector2(14, -2)
 
 # --- Signals ---
 signal cast_started
 signal reeling_started
+signal reeling_finished
+signal bite_started
 
 # --- Casting Variables ---
 var is_casting = false
@@ -42,6 +44,7 @@ func _process(delta):
 
 		# When close enough to rod, reset
 		if bobber.position.distance_to(target) < 2:
+			reeling_finished.emit()
 			reset_fishing()
 		return  # Stop all other logic during reeling
 
@@ -72,6 +75,7 @@ func cast(facing_right: bool):
 	if is_casting:
 		return
 
+	$bobber/hook_shoot.play()
 	cast_started.emit()
 	is_casting = true
 	caught = false
@@ -95,10 +99,15 @@ func show_bite():
 	if caught or fish_on_line or not floating:
 		return
 
+	$bobber/bite.play()
 	fish_on_line = true
+	flash_bobber()
 	print("!! BITE !! Press interact to hook it!")
+	bite_started.emit()
 
 	await get_tree().create_timer(catch_window).timeout
+	
+	stop_bobber_flash()
 
 	if fish_on_line:
 		print("The fish escaped...")
@@ -131,3 +140,15 @@ func start_reeling_in():
 	reeling_in = true
 	floating = false  # Stop floating motion
 	velocity = Vector2.ZERO  # Stop arc motion
+
+func flash_bobber():
+	var tween := create_tween().set_loops()
+	tween.tween_property($bobber, "modulate", Color.RED, 0.2).set_trans(Tween.TRANS_SINE)
+	tween.tween_property($bobber, "modulate", Color(1, 1, 1, 0.6), 0.2).set_trans(Tween.TRANS_SINE)
+	$bobber.set_meta("flash_tween", tween)
+
+func stop_bobber_flash():
+	var tween: Tween = $bobber.get_meta("flash_tween")
+	if tween:
+		tween.kill()
+		$bobber.modulate.a = 1.0  # Reset opacity
