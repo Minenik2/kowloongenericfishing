@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=4 uid="uid://ccyl48wej715s"]
+[gd_scene load_steps=26 format=4 uid="uid://ccyl48wej715s"]
 
 [ext_resource type="Texture2D" uid="uid://dne7smfeecg0g" path="res://art/tileset.png" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://dui8oveoikvf4" path="res://art/water.png" id="2_0xm2m"]
@@ -16,6 +16,20 @@
 [ext_resource type="AudioStream" uid="uid://j8l4ufku8ubx" path="res://audio/hook_reel.wav" id="11_vivmo"]
 [ext_resource type="AudioStream" uid="uid://bxdbmmq3j6c55" path="res://audio/hook_catch.wav" id="12_2cqfq"]
 [ext_resource type="Script" uid="uid://c7qmicvi5dl01" path="res://music.gd" id="12_dg77c"]
+[ext_resource type="Shader" uid="uid://di6wpe5cjlu6x" path="res://fog.gdshader" id="15_074og"]
+[ext_resource type="Shader" uid="uid://5cgisi5vydlf" path="res://background.gdshader" id="15_cegan"]
+[ext_resource type="Texture2D" uid="uid://cip4jb5o3tlv7" path="res://art/fog.png" id="15_yaehf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_82xsv"]
+shader = ExtResource("15_cegan")
+shader_parameter/top_color = Color(0.941, 0.965, 0.941, 1)
+shader_parameter/bottom_color = Color(0.133, 0.137, 0.137, 1)
+shader_parameter/noise_scale = 10.0
+shader_parameter/noise_speed = 1.5
+shader_parameter/noise_intensity = 0.15
+shader_parameter/wobble_amplitude = 0.03
+shader_parameter/wobble_speed = 3.0
+shader_parameter/rgb_split_amount = 0.01
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0xm2m"]
 texture = ExtResource("1_ig7tw")
@@ -35,57 +49,84 @@ shader_parameter/wave_frequency = 20.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
 size = Vector2(5.94556, 27)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cegan"]
+shader = ExtResource("15_074og")
+shader_parameter/time_scale = 0.1
+shader_parameter/noise_scale = 2.0
+shader_parameter/speed = 0.02
+shader_parameter/intensity = 0.4
+shader_parameter/fog_color = Color(0.631373, 0.00784314, 0.0470588, 0.27451)
+
 [node name="Node2D" type="Node2D"]
 scale = Vector2(4, 4)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -5
+
+[node name="background" type="TextureRect" parent="CanvasLayer"]
+z_index = -13
+z_as_relative = false
+material = SubResource("ShaderMaterial_82xsv")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 626.0
+offset_bottom = 416.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("15_yaehf")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 z_index = -1
 tile_map_data = PackedByteArray("AAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAIAAUAAAAAAAEAAAAIAAYAAAAAAAIAAAAJAAYAAAAAAAIAAAAJAAUAAAAAAAEAAAAJAAcAAAAAAAIAAAAIAAcAAAAAAAIAAAAHAAcAAAAAAAIAAAAHAAYAAAAAAAIAAAAHAAUAAAAAAAEAAAAHAAQAAAAAAAAAAAAHAAEAAAAAAAAAAAAHAAIAAAAAAAEAAAAHAAMAAAAAAAIAAAAIAAMAAAAAAAIAAAAIAAIAAAAAAAEAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAIAAAAJAAIAAAAAAAIAAAAJAAMAAAAAAAIAAAAHAAAAAAAAAAIAAAAIAAAAAAAAAAIAAAAJAAAAAAAAAAIAAAAHAAgAAAAAAAAAAAAHAAkAAAAAAAEAAAAHAAoAAAAAAAIAAAAIAAgAAAAAAAAAAAAIAAkAAAAAAAEAAAAIAAoAAAAAAAIAAAAJAAgAAAAAAAAAAAAJAAkAAAAAAAEAAAAJAAoAAAAAAAIAAAAHAAsAAAAAAAAAAAAHAAwAAAAAAAEAAAAHAA0AAAAAAAIAAAAIAAsAAAAAAAAAAAAIAAwAAAAAAAEAAAAIAA0AAAAAAAIAAAAJAAsAAAAAAAAAAAAJAAwAAAAAAAEAAAAJAA0AAAAAAAIAAAAHAA4AAAAAAAAAAAAHAA8AAAAAAAEAAAAHABAAAAAAAAIAAAAIAA4AAAAAAAAAAAAIAA8AAAAAAAEAAAAIABAAAAAAAAIAAAAJAA4AAAAAAAAAAAAJAA8AAAAAAAEAAAAJABAAAAAAAAIAAAAHABEAAAAAAAAAAAAHABIAAAAAAAEAAAAHABMAAAAAAAIAAAAIABEAAAAAAAAAAAAIABIAAAAAAAEAAAAIABMAAAAAAAIAAAAJABEAAAAAAAAAAAAJABIAAAAAAAEAAAAJABMAAAAAAAIAAAAHABQAAAAAAAAAAAAHABUAAAAAAAEAAAAHABYAAAAAAAIAAAAIABQAAAAAAAAAAAAIABUAAAAAAAEAAAAIABYAAAAAAAIAAAAJABQAAAAAAAAAAAAJABUAAAAAAAEAAAAJABYAAAAAAAIAAAAGAAYAAAAAAAIAAAAGAAcAAAAAAAIAAAAGAAgAAAAAAAIAAAAFAAgAAAAAAAIAAAAFAAkAAAAAAAIAAAAFAAoAAAAAAAIAAAAFAAsAAAAAAAIAAAAGAAsAAAAAAAIAAAAGAAwAAAAAAAIAAAAGAA0AAAAAAAIAAAAGAAoAAAAAAAIAAAAGAAkAAAAAAAIAAAAFAAwAAAAAAAIAAAAFAA0AAAAAAAIAAAAFAA4AAAAAAAIAAAAFAA8AAAAAAAIAAAAFABAAAAAAAAIAAAAFABEAAAAAAAIAAAAFABIAAAAAAAIAAAAFABMAAAAAAAIAAAAGABIAAAAAAAIAAAAGABEAAAAAAAIAAAAGABAAAAAAAAIAAAAGAA8AAAAAAAIAAAAGAA4AAAAAAAIAAAAGABMAAAAAAAIAAAAGABQAAAAAAAIAAAAGABUAAAAAAAIAAAAFABUAAAAAAAIAAAAFABYAAAAAAAIAAAAFABQAAAAAAAIAAAAGABYAAAAAAAIAAAAKABYAAAAAAAIAAAAKABUAAAAAAAIAAAALABQAAAAAAAIAAAALABUAAAAAAAIAAAALABYAAAAAAAIAAAAKABQAAAAAAAIAAAAKABMAAAAAAAIAAAAKABIAAAAAAAIAAAALABMAAAAAAAIAAAALABIAAAAAAAIAAAALABEAAAAAAAIAAAALABAAAAAAAAIAAAALAA8AAAAAAAIAAAALAA4AAAAAAAIAAAALAA0AAAAAAAIAAAAKAA8AAAAAAAIAAAAKABAAAAAAAAIAAAAKABEAAAAAAAIAAAAKAA4AAAAAAAIAAAAKAA0AAAAAAAIAAAAKAAwAAAAAAAIAAAAKAAsAAAAAAAIAAAAKAAoAAAAAAAIAAAAKAAkAAAAAAAIAAAAKAAgAAAAAAAIAAAALAAgAAAAAAAIAAAALAAkAAAAAAAIAAAALAAoAAAAAAAIAAAALAAsAAAAAAAIAAAALAAwAAAAAAAIAAAAEAAsAAAAAAAIAAAADAAsAAAAAAAIAAAADAAwAAAAAAAIAAAACAAwAAAAAAAIAAAACAA0AAAAAAAIAAAABAA0AAAAAAAIAAAABAA4AAAAAAAIAAAABAA8AAAAAAAIAAAABABAAAAAAAAIAAAABABEAAAAAAAIAAAABABIAAAAAAAIAAAAMAAwAAAAAAAIAAAANAAwAAAAAAAIAAAAMAAsAAAAAAAIAAAANAAsAAAAAAAIAAAAOAAwAAAAAAAIAAAAOAA0AAAAAAAIAAAAPAA0AAAAAAAIAAAAPAA4AAAAAAAIAAAAPAA8AAAAAAAIAAAAPABAAAAAAAAIAAAAPABEAAAAAAAIAAAAPABIAAAAAAAIAAAAOABIAAAAAAAIAAAAOABMAAAAAAAIAAAAOABQAAAAAAAIAAAANABIAAAAAAAIAAAANABEAAAAAAAIAAAANABAAAAAAAAIAAAANAA8AAAAAAAIAAAANAA0AAAAAAAIAAAANAA4AAAAAAAIAAAANABMAAAAAAAIAAAANABQAAAAAAAIAAAAMAA4AAAAAAAIAAAAMAA8AAAAAAAIAAAAMABAAAAAAAAIAAAAMABEAAAAAAAIAAAAMABIAAAAAAAIAAAAMABMAAAAAAAIAAAAMABQAAAAAAAIAAAAMAA0AAAAAAAIAAAAOABAAAAAAAAIAAAAOABEAAAAAAAIAAAAPABMAAAAAAAIAAAAPABQAAAAAAAIAAAAOAA8AAAAAAAIAAAAOAA4AAAAAAAIAAAAEAAwAAAAAAAIAAAAEAA0AAAAAAAIAAAAEAA4AAAAAAAIAAAAEAA8AAAAAAAIAAAAEABAAAAAAAAIAAAAEABEAAAAAAAIAAAAEABIAAAAAAAIAAAAEABMAAAAAAAIAAAAEABQAAAAAAAIAAAADABQAAAAAAAIAAAADABUAAAAAAAIAAAACABQAAAAAAAIAAAACABMAAAAAAAIAAAACABIAAAAAAAIAAAACAA8AAAAAAAIAAAACAA4AAAAAAAIAAAACABAAAAAAAAIAAAACABEAAAAAAAIAAAABABMAAAAAAAIAAAABABQAAAAAAAIAAAADAA4AAAAAAAIAAAADAA8AAAAAAAIAAAADABAAAAAAAAIAAAADABEAAAAAAAIAAAADABIAAAAAAAIAAAADAA0AAAAAAAIAAAADABMAAAAAAAIAAAAEABUAAAAAAAIAAAACABUAAAAAAAIAAAABABUAAAAAAAIAAAA=")
 tile_set = SubResource("TileSet_h2yge")
 
-[node name="wave" type="Sprite2D" parent="."]
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(9.25, -10.75)
+
+[node name="wave" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(85.625, 350)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave3" type="Sprite2D" parent="."]
+[node name="wave3" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(-90.75, 347.75)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave4" type="Sprite2D" parent="."]
+[node name="wave4" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(-11, 369)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave2" type="Sprite2D" parent="."]
+[node name="wave2" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(174.25, 353)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave5" type="Sprite2D" parent="."]
+[node name="wave5" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(129.75, 373.5)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave6" type="Sprite2D" parent="."]
+[node name="wave6" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(178.5, 378.75)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave7" type="Sprite2D" parent="."]
+[node name="wave7" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(42, 392.5)
@@ -149,6 +190,17 @@ script = ExtResource("9_kek77")
 
 [node name="LetterboxLayer" type="CanvasLayer" parent="."]
 script = ExtResource("10_4c57u")
+
+[node name="fog" type="TextureRect" parent="LetterboxLayer"]
+texture_filter = 1
+texture_repeat = 3
+material = SubResource("ShaderMaterial_cegan")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("15_yaehf")
 
 [node name="leftRect" type="ColorRect" parent="LetterboxLayer"]
 anchors_preset = 9
