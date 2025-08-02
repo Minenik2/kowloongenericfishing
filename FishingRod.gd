@@ -18,7 +18,7 @@ signal bite_started
 var is_casting = false
 var velocity = Vector2.ZERO
 const GRAVITY := 300.0
-var cast_power_base = Vector2(60, -100)
+var cast_power_base = Vector2(5, -100)
 
 # --- Floating Variables ---
 var floating := false
@@ -35,7 +35,22 @@ var catch_window = 0.8 # window to catch the fish
 var reeling_in := false
 const REEL_SPEED := 200.0
 
+# --- Charging Cast Variables ---
+var is_charging := false
+var cast_power := 1
+var max_cast_power := 60
+var charge_speed := 1  # How fast the bar fills per second
+
 func _process(delta):
+	if is_charging:
+		cast_power += charge_speed
+		if cast_power > max_cast_power:
+			cast_power = 0.0  # Loop back to zero
+		$CastBar.value = cast_power
+		$CastBar.visible = true
+	else:
+		$CastBar.visible = false
+	
 	if reeling_in:
 		# Reeling motion
 		var target = Vector2(-16, 0)
@@ -72,7 +87,7 @@ func _process(delta):
 			bobber.position.y = base_water_pos.y + bob_offset
 			line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
 
-func cast(facing_right: bool):
+func cast(facing_right: bool, power: float):
 	if is_casting:
 		return
 
@@ -87,7 +102,8 @@ func cast(facing_right: bool):
 
 	# Flip X velocity if facing left
 	var direction_multiplier = 1 if facing_right else -1
-	velocity = cast_power_base * Vector2(direction_multiplier, 1)
+	velocity = cast_power_base + power * Vector2(direction_multiplier, 1)
+	print("Casted with cast power: ", cast_power)
 
 	line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
 
@@ -155,3 +171,16 @@ func stop_bobber_flash():
 	if tween:
 		tween.kill()
 		$bobber.modulate.a = 1.0  # Reset opacity
+
+func begin_charge():
+	if not is_casting:
+		is_charging = true
+		cast_power = 0.0
+		$CastBar.visible = true
+
+func end_charge_and_cast(facing_right: bool):
+	if is_charging:
+		is_charging = false
+		$CastBar.visible = false
+		cast(facing_right, cast_power)
+		cast_power = 0.0

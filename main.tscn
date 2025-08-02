@@ -133,6 +133,15 @@ volume_db = -3.0
 stream = ExtResource("12_2cqfq")
 volume_db = -5.0
 
+[node name="CastBar" type="ProgressBar" parent="player/rod"]
+texture_filter = 1
+offset_left = -16.0
+offset_top = -37.0
+offset_right = 22.0
+offset_bottom = -30.0
+max_value = 60.0
+show_percentage = false
+
 [node name="Camera2D" type="Camera2D" parent="player"]
 position = Vector2(0.75, -8.75)
 position_smoothing_speed = 2.0

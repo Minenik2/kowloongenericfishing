@@ -11,10 +11,13 @@ func _physics_process(delta):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("interact"):
-		if fishing_rod.is_casting:
+		if not fishing_rod.is_casting:
+			fishing_rod.begin_charge()
+	elif event.is_action_released("interact"):
+		if fishing_rod.is_charging:
+			fishing_rod.end_charge_and_cast(is_facing_right)
+		elif fishing_rod.is_casting:
 			fishing_rod.try_catch()
-		else:
-			fishing_rod.cast(is_facing_right)
 
 func handle_movement(delta):
 	var direction = Vector2.ZERO
