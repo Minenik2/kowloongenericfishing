@@ -20,16 +20,19 @@ func _unhandled_input(event):
 			fishing_rod.try_catch()
 
 func handle_movement(delta):
-	var direction = Vector2.ZERO
+	var direction := Input.get_axis("left", "right")
+	
+	if velocity.x == 0:
+		$AnimationPlayer.play("idle")
+	else:
+		$AnimationPlayer.play("walk")
 
 	if Input.is_action_pressed("left"):
-		direction.x -= 1
 		is_facing_right = false
 	elif Input.is_action_pressed("right"):
-		direction.x += 1
 		is_facing_right = true
 
-	velocity = direction * move_speed
+	velocity.x = direction * move_speed
 	move_and_slide()
 
 	# Flip sprite
@@ -39,3 +42,5 @@ func handle_movement(delta):
 	# Move the rod with the player (flips X)
 	if not fishing_rod.is_casting:
 		fishing_rod.position.x = 6 if is_facing_right else -6
+		$rod/bobber.position.x = abs($rod/bobber.position.x) if is_facing_right else -abs($rod/bobber.position.x)
+		$rod/Line2D.position.x = abs($rod/Line2D.position.x) if is_facing_right else -abs($rod/Line2D.position.x)

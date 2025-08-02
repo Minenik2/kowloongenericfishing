@@ -40,6 +40,10 @@ var is_charging := false
 var cast_power := 1
 var max_cast_power := 60
 var charge_speed := 1  # How fast the bar fills per second
+var can_cast := true
+
+var minigame_active := false
+var facing_right_bool = false
 
 func _process(delta):
 	if is_charging:
@@ -48,14 +52,12 @@ func _process(delta):
 			cast_power = 0.0  # Loop back to zero
 		$CastBar.value = cast_power
 		$CastBar.visible = true
-	else:
-		$CastBar.visible = false
 	
 	if reeling_in:
 		# Reeling motion
-		var target = Vector2(-16, 0)
+		var target = line.position
 		bobber.position = bobber.position.move_toward(target, REEL_SPEED * delta)
-		line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
+		updateLinePoints()
 
 		# When close enough to rod, reset
 		if bobber.position.distance_to(target) < 2:
@@ -70,11 +72,11 @@ func _process(delta):
 			velocity.y += GRAVITY * delta
 			bobber.position += velocity * delta
 
-			# Update line points
-			line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
+			updateLinePoints()
 
 			# Land on water
 			if bobber.position.y >= WATER_LEVEL:
+				$bobber/hook_water.play()
 				bobber.position.y = WATER_LEVEL
 				velocity = Vector2.ZERO
 				floating = true
@@ -85,7 +87,7 @@ func _process(delta):
 			float_timer += delta
 			var bob_offset = sin(float_timer * FLOAT_SPEED) * FLOAT_AMPLITUDE
 			bobber.position.y = base_water_pos.y + bob_offset
-			line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
+			updateLinePoints()
 
 func cast(facing_right: bool, power: float):
 	if is_casting:
@@ -96,24 +98,27 @@ func cast(facing_right: bool, power: float):
 	is_casting = true
 	caught = false
 	fish_on_line = false
-
+	facing_right_bool = facing_right
+	
 	bobber.visible = true
-	bobber.position = Vector2(-16, 0)  # Origin at rod tip
+	bobber.position = Vector2(16, 0)  if facing_right else Vector2(-16, 0) # Origin at rod tip
 
 	# Flip X velocity if facing left
 	var direction_multiplier = 1 if facing_right else -1
 	velocity = cast_power_base + power * Vector2(direction_multiplier, 1)
 	print("Casted with cast power: ", cast_power)
 
-	line.points = [Vector2.ZERO, bobber.position + ROD_TIP_POSITION]
+	updateLinePoints()
 
 func fish_bite_delay():
+	if minigame_active: return  # prevent triggering new bites
+	
 	var wait_time = randf_range(1.0, 3.0)
 	await get_tree().create_timer(wait_time).timeout
 	show_bite()
 
 func show_bite():
-	if caught or fish_on_line or not floating:
+	if caught or fish_on_line or not floating or minigame_active:
 		return
 
 	$bobber/bite.play()
@@ -133,12 +138,23 @@ func show_bite():
 		# Do NOT call reset_fishing here – let the player decide to reel in
 
 func try_catch():
-	if fish_on_line:
-		#$bobber/hook_catch.play()
-		print("You caught something!")
-		fish_on_line = false
-		caught = true
-		start_reeling_in()
+	if fish_on_line and not minigame_active:
+		minigame_active = true  # prevent bites while in minigame
+		$"../../fishingMinigame".start()
+		
+		var success = await $"../../fishingMinigame".fish_caught
+		minigame_active = false  # resume normal behavior
+		
+		if success:
+			print("You caught something!")
+			fish_on_line = false
+			caught = true
+			start_reeling_in()
+		else:
+			fish_on_line = false
+			print("The fish escaped...")
+			fish_bite_delay()
+		
 	elif floating and not fish_on_line:
 		print("You reeled in the line.")
 		start_reeling_in()
@@ -154,6 +170,8 @@ func reset_fishing():
 	bobber.visible = false
 
 func start_reeling_in():
+	if minigame_active: return
+	
 	$bobber/hook_reel.play()
 	reeling_started.emit()
 	reeling_in = true
@@ -173,14 +191,32 @@ func stop_bobber_flash():
 		$bobber.modulate.a = 1.0  # Reset opacity
 
 func begin_charge():
-	if not is_casting:
+	if not is_casting and can_cast:
 		is_charging = true
 		cast_power = 0.0
 		$CastBar.visible = true
 
 func end_charge_and_cast(facing_right: bool):
-	if is_charging:
+	if is_charging and can_cast:
 		is_charging = false
+		can_cast = false
+
+		# Optional visual feedback: pulse the bar briefly
+		var tween := create_tween()
+		tween.tween_property($CastBar, "scale", Vector2(1.1, 1.1), 0.1).set_trans(Tween.TRANS_SINE)
+		tween.tween_property($CastBar, "scale", Vector2(1.0, 1.0), 0.1).set_trans(Tween.TRANS_SINE)
+
+		# Pause to show cast power briefly
+		await get_tree().create_timer(0.3).timeout
+		
 		$CastBar.visible = false
 		cast(facing_right, cast_power)
 		cast_power = 0.0
+		
+		can_cast = true
+
+func updateLinePoints():
+	# Update line points
+	var rod_tip = ROD_TIP_POSITION
+	rod_tip.x *= -1 if facing_right_bool else 1
+	line.points = [Vector2.ZERO, bobber.position + rod_tip]

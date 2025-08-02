@@ -1,13 +1,13 @@
-[gd_scene load_steps=34 format=4 uid="uid://ccyl48wej715s"]
+[gd_scene load_steps=27 format=4 uid="uid://ccyl48wej715s"]
 
 [ext_resource type="Texture2D" uid="uid://dne7smfeecg0g" path="res://art/tileset.png" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://dui8oveoikvf4" path="res://art/water.png" id="2_0xm2m"]
 [ext_resource type="Shader" uid="uid://cb46f8bjcb3lp" path="res://water.gdshader" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://t67ehgv6t7cg" path="res://art/character.png" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://cfp8cqy0m0imp" path="res://player.gd" id="4_5vw27"]
 [ext_resource type="Texture2D" uid="uid://cyowslsy6o8dv" path="res://art/rod.png" id="5_lquwl"]
 [ext_resource type="Texture2D" uid="uid://dxsl5mayrktsb" path="res://art/bober.png" id="6_7mycd"]
 [ext_resource type="Script" uid="uid://co23kbh2eea1y" path="res://FishingRod.gd" id="6_272bh"]
-[ext_resource type="Texture2D" uid="uid://cbpvhtja2emt5" path="res://art/character-sheet.png" id="8_ryguw"]
 [ext_resource type="Script" uid="uid://c5o328most3lp" path="res://camera_2d.gd" id="9_kek77"]
 [ext_resource type="AudioStream" uid="uid://c61s241dsbisr" path="res://audio/hook_shoot.wav" id="9_ycdy4"]
 [ext_resource type="Script" uid="uid://bvlskk54xmdyb" path="res://letterbox_layer.gd" id="10_4c57u"]
@@ -18,10 +18,8 @@
 [ext_resource type="Script" uid="uid://c7qmicvi5dl01" path="res://music.gd" id="12_dg77c"]
 [ext_resource type="Shader" uid="uid://di6wpe5cjlu6x" path="res://fog.gdshader" id="15_074og"]
 [ext_resource type="Shader" uid="uid://5cgisi5vydlf" path="res://background.gdshader" id="15_cegan"]
-[ext_resource type="AudioStream" uid="uid://ce2qvox6ryb51" path="res://audio/hook_water.wav" id="15_getpj"]
 [ext_resource type="Texture2D" uid="uid://cip4jb5o3tlv7" path="res://art/fog.png" id="15_yaehf"]
 [ext_resource type="PackedScene" uid="uid://b4ob3fc0v04dc" path="res://fishing_minigame.tscn" id="20_82xsv"]
-[ext_resource type="Texture2D" uid="uid://hcjbxbbrgsf7" path="res://art/Kowloon.png" id="22_ryguw"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_82xsv"]
 shader = ExtResource("15_cegan")
@@ -49,62 +47,6 @@ shader_parameter/wave_strength = 5.0
 shader_parameter/wave_speed = 1.0
 shader_parameter/wave_frequency = 20.0
 
-[sub_resource type="Animation" id="Animation_ryguw"]
-resource_name = "idle"
-length = 3.4
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.797674, 1.20233, 1.6, 2.00465, 2.4, 2.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 0, 1, 0, 1, 2, 3]
-}
-
-[sub_resource type="Animation" id="Animation_d13ii"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="Animation" id="Animation_1u8w0"]
-resource_name = "walk"
-length = 0.6
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.133333, 0.266667, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [4, 5, 6, 7, 8]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_1u8w0"]
-_data = {
-&"RESET": SubResource("Animation_d13ii"),
-&"idle": SubResource("Animation_ryguw"),
-&"walk": SubResource("Animation_1u8w0")
-}
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1bvp3"]
 size = Vector2(5.94556, 27)
 
@@ -116,40 +58,8 @@ shader_parameter/speed = 0.02
 shader_parameter/intensity = 0.4
 shader_parameter/fog_color = Color(0.631373, 0.00784314, 0.0470588, 0.27451)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ryguw"]
-
 [node name="Node2D" type="Node2D"]
 scale = Vector2(4, 4)
-
-[node name="building2" type="Sprite2D" parent="."]
-z_index = -1
-position = Vector2(452.25, 191)
-texture = ExtResource("22_ryguw")
-
-[node name="building3" type="Sprite2D" parent="."]
-z_index = -1
-position = Vector2(-186.5, 183.25)
-texture = ExtResource("22_ryguw")
-
-[node name="building4" type="Sprite2D" parent="."]
-z_index = -1
-position = Vector2(128.75, -214.25)
-texture = ExtResource("22_ryguw")
-
-[node name="building5" type="Sprite2D" parent="."]
-z_index = -1
-position = Vector2(446.5, -203.25)
-texture = ExtResource("22_ryguw")
-
-[node name="building6" type="Sprite2D" parent="."]
-z_index = -1
-position = Vector2(-189.75, -216.25)
-texture = ExtResource("22_ryguw")
-
-[node name="building" type="Sprite2D" parent="."]
-z_index = -1
-position = Vector2(132, 183.25)
-texture = ExtResource("22_ryguw")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -5
@@ -161,13 +71,13 @@ material = SubResource("ShaderMaterial_82xsv")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 626.0
+offset_bottom = 416.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("15_yaehf")
-metadata/_edit_lock_ = true
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
-visible = false
 z_index = -1
 tile_map_data = PackedByteArray("AAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAIAAUAAAAAAAEAAAAIAAYAAAAAAAIAAAAJAAYAAAAAAAIAAAAJAAUAAAAAAAEAAAAJAAcAAAAAAAIAAAAIAAcAAAAAAAIAAAAHAAcAAAAAAAIAAAAHAAYAAAAAAAIAAAAHAAUAAAAAAAEAAAAHAAQAAAAAAAAAAAAHAAEAAAAAAAAAAAAHAAIAAAAAAAEAAAAHAAMAAAAAAAIAAAAIAAMAAAAAAAIAAAAIAAIAAAAAAAEAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAIAAAAJAAIAAAAAAAIAAAAJAAMAAAAAAAIAAAAHAAAAAAAAAAIAAAAIAAAAAAAAAAIAAAAJAAAAAAAAAAIAAAAHAAgAAAAAAAAAAAAHAAkAAAAAAAEAAAAHAAoAAAAAAAIAAAAIAAgAAAAAAAAAAAAIAAkAAAAAAAEAAAAIAAoAAAAAAAIAAAAJAAgAAAAAAAAAAAAJAAkAAAAAAAEAAAAJAAoAAAAAAAIAAAAHAAsAAAAAAAAAAAAHAAwAAAAAAAEAAAAHAA0AAAAAAAIAAAAIAAsAAAAAAAAAAAAIAAwAAAAAAAEAAAAIAA0AAAAAAAIAAAAJAAsAAAAAAAAAAAAJAAwAAAAAAAEAAAAJAA0AAAAAAAIAAAAHAA4AAAAAAAAAAAAHAA8AAAAAAAEAAAAHABAAAAAAAAIAAAAIAA4AAAAAAAAAAAAIAA8AAAAAAAEAAAAIABAAAAAAAAIAAAAJAA4AAAAAAAAAAAAJAA8AAAAAAAEAAAAJABAAAAAAAAIAAAAHABEAAAAAAAAAAAAHABIAAAAAAAEAAAAHABMAAAAAAAIAAAAIABEAAAAAAAAAAAAIABIAAAAAAAEAAAAIABMAAAAAAAIAAAAJABEAAAAAAAAAAAAJABIAAAAAAAEAAAAJABMAAAAAAAIAAAAHABQAAAAAAAAAAAAHABUAAAAAAAEAAAAHABYAAAAAAAIAAAAIABQAAAAAAAAAAAAIABUAAAAAAAEAAAAIABYAAAAAAAIAAAAJABQAAAAAAAAAAAAJABUAAAAAAAEAAAAJABYAAAAAAAIAAAAGAAYAAAAAAAIAAAAGAAcAAAAAAAIAAAAGAAgAAAAAAAIAAAAFAAgAAAAAAAIAAAAFAAkAAAAAAAIAAAAFAAoAAAAAAAIAAAAFAAsAAAAAAAIAAAAGAAsAAAAAAAIAAAAGAAwAAAAAAAIAAAAGAA0AAAAAAAIAAAAGAAoAAAAAAAIAAAAGAAkAAAAAAAIAAAAFAAwAAAAAAAIAAAAFAA0AAAAAAAIAAAAFAA4AAAAAAAIAAAAFAA8AAAAAAAIAAAAFABAAAAAAAAIAAAAFABEAAAAAAAIAAAAFABIAAAAAAAIAAAAFABMAAAAAAAIAAAAGABIAAAAAAAIAAAAGABEAAAAAAAIAAAAGABAAAAAAAAIAAAAGAA8AAAAAAAIAAAAGAA4AAAAAAAIAAAAGABMAAAAAAAIAAAAGABQAAAAAAAIAAAAGABUAAAAAAAIAAAAFABUAAAAAAAIAAAAFABYAAAAAAAIAAAAFABQAAAAAAAIAAAAGABYAAAAAAAIAAAAKABYAAAAAAAIAAAAKABUAAAAAAAIAAAALABQAAAAAAAIAAAALABUAAAAAAAIAAAALABYAAAAAAAIAAAAKABQAAAAAAAIAAAAKABMAAAAAAAIAAAAKABIAAAAAAAIAAAALABMAAAAAAAIAAAALABIAAAAAAAIAAAALABEAAAAAAAIAAAALABAAAAAAAAIAAAALAA8AAAAAAAIAAAALAA4AAAAAAAIAAAALAA0AAAAAAAIAAAAKAA8AAAAAAAIAAAAKABAAAAAAAAIAAAAKABEAAAAAAAIAAAAKAA4AAAAAAAIAAAAKAA0AAAAAAAIAAAAKAAwAAAAAAAIAAAAKAAsAAAAAAAIAAAAKAAoAAAAAAAIAAAAKAAkAAAAAAAIAAAAKAAgAAAAAAAIAAAALAAgAAAAAAAIAAAALAAkAAAAAAAIAAAALAAoAAAAAAAIAAAALAAsAAAAAAAIAAAALAAwAAAAAAAIAAAAEAAsAAAAAAAIAAAADAAsAAAAAAAIAAAADAAwAAAAAAAIAAAACAAwAAAAAAAIAAAACAA0AAAAAAAIAAAABAA0AAAAAAAIAAAABAA4AAAAAAAIAAAABAA8AAAAAAAIAAAABABAAAAAAAAIAAAABABEAAAAAAAIAAAABABIAAAAAAAIAAAAMAAwAAAAAAAIAAAANAAwAAAAAAAIAAAAMAAsAAAAAAAIAAAANAAsAAAAAAAIAAAAOAAwAAAAAAAIAAAAOAA0AAAAAAAIAAAAPAA0AAAAAAAIAAAAPAA4AAAAAAAIAAAAPAA8AAAAAAAIAAAAPABAAAAAAAAIAAAAPABEAAAAAAAIAAAAPABIAAAAAAAIAAAAOABIAAAAAAAIAAAAOABMAAAAAAAIAAAAOABQAAAAAAAIAAAANABIAAAAAAAIAAAANABEAAAAAAAIAAAANABAAAAAAAAIAAAANAA8AAAAAAAIAAAANAA0AAAAAAAIAAAANAA4AAAAAAAIAAAANABMAAAAAAAIAAAANABQAAAAAAAIAAAAMAA4AAAAAAAIAAAAMAA8AAAAAAAIAAAAMABAAAAAAAAIAAAAMABEAAAAAAAIAAAAMABIAAAAAAAIAAAAMABMAAAAAAAIAAAAMABQAAAAAAAIAAAAMAA0AAAAAAAIAAAAOABAAAAAAAAIAAAAOABEAAAAAAAIAAAAPABMAAAAAAAIAAAAPABQAAAAAAAIAAAAOAA8AAAAAAAIAAAAOAA4AAAAAAAIAAAAEAAwAAAAAAAIAAAAEAA0AAAAAAAIAAAAEAA4AAAAAAAIAAAAEAA8AAAAAAAIAAAAEABAAAAAAAAIAAAAEABEAAAAAAAIAAAAEABIAAAAAAAIAAAAEABMAAAAAAAIAAAAEABQAAAAAAAIAAAADABQAAAAAAAIAAAADABUAAAAAAAIAAAACABQAAAAAAAIAAAACABMAAAAAAAIAAAACABIAAAAAAAIAAAACAA8AAAAAAAIAAAACAA4AAAAAAAIAAAACABAAAAAAAAIAAAACABEAAAAAAAIAAAABABMAAAAAAAIAAAABABQAAAAAAAIAAAADAA4AAAAAAAIAAAADAA8AAAAAAAIAAAADABAAAAAAAAIAAAADABEAAAAAAAIAAAADABIAAAAAAAIAAAADAA0AAAAAAAIAAAADABMAAAAAAAIAAAAEABUAAAAAAAIAAAACABUAAAAAAAIAAAABABUAAAAAAAIAAAA=")
 tile_set = SubResource("TileSet_h2yge")
@@ -175,84 +85,52 @@ tile_set = SubResource("TileSet_h2yge")
 [node name="Node2D" type="Node2D" parent="."]
 position = Vector2(9.25, -10.75)
 
-[node name="waves" type="Node2D" parent="Node2D"]
-
-[node name="wave" type="Sprite2D" parent="Node2D/waves"]
+[node name="wave" type="Sprite2D" parent="Node2D"]
 z_index = -1
-texture_filter = 1
-texture_repeat = 3
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(85.625, 350)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave3" type="Sprite2D" parent="Node2D/waves"]
+[node name="wave3" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(-90.75, 347.75)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave4" type="Sprite2D" parent="Node2D/waves"]
+[node name="wave4" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(-11, 369)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave2" type="Sprite2D" parent="Node2D/waves"]
+[node name="wave2" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(174.25, 353)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave5" type="Sprite2D" parent="Node2D/waves"]
+[node name="wave5" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(129.75, 373.5)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave6" type="Sprite2D" parent="Node2D/waves"]
+[node name="wave6" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(178.5, 378.75)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
-[node name="wave7" type="Sprite2D" parent="Node2D/waves"]
+[node name="wave7" type="Sprite2D" parent="Node2D"]
 z_index = -1
 material = SubResource("ShaderMaterial_1bvp3")
 position = Vector2(42, 392.5)
-scale = Vector2(5.55469, 3.40625)
-texture = ExtResource("2_0xm2m")
-
-[node name="wave10" type="Sprite2D" parent="Node2D/waves"]
-z_index = -1
-material = SubResource("ShaderMaterial_1bvp3")
-position = Vector2(348, 351.5)
-scale = Vector2(5.55469, 3.40625)
-texture = ExtResource("2_0xm2m")
-
-[node name="wave11" type="Sprite2D" parent="Node2D/waves"]
-z_index = -1
-material = SubResource("ShaderMaterial_1bvp3")
-position = Vector2(365, 375)
-scale = Vector2(5.55469, 3.40625)
-texture = ExtResource("2_0xm2m")
-
-[node name="wave8" type="Sprite2D" parent="Node2D/waves"]
-z_index = -1
-material = SubResource("ShaderMaterial_1bvp3")
-position = Vector2(215.75, 393.5)
-scale = Vector2(5.55469, 3.40625)
-texture = ExtResource("2_0xm2m")
-
-[node name="wave9" type="Sprite2D" parent="Node2D/waves"]
-z_index = -1
-material = SubResource("ShaderMaterial_1bvp3")
-position = Vector2(391.5, 393.5)
 scale = Vector2(5.55469, 3.40625)
 texture = ExtResource("2_0xm2m")
 
@@ -261,16 +139,9 @@ z_index = -1
 position = Vector2(120, 79.75)
 script = ExtResource("4_5vw27")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="player"]
-libraries = {
-&"": SubResource("AnimationLibrary_1u8w0")
-}
-autoplay = "idle"
-
 [node name="Sprite2D" type="Sprite2D" parent="player"]
-texture = ExtResource("8_ryguw")
+texture = ExtResource("4_1bvp3")
 flip_h = true
-hframes = 9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="player"]
 position = Vector2(0.777222, 1.5)
@@ -304,12 +175,7 @@ volume_db = -3.0
 stream = ExtResource("12_2cqfq")
 volume_db = -5.0
 
-[node name="hook_water" type="AudioStreamPlayer2D" parent="player/rod/bobber"]
-stream = ExtResource("15_getpj")
-volume_db = -3.0
-
 [node name="CastBar" type="ProgressBar" parent="player/rod"]
-visible = false
 texture_filter = 1
 offset_left = -16.0
 offset_top = -37.0
@@ -367,19 +233,8 @@ songs = Array[AudioStream]([ExtResource("11_efxa6")])
 
 [node name="fishingMinigame" parent="." instance=ExtResource("20_82xsv")]
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(94.75, 84.5)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-shape = SubResource("RectangleShape2D_ryguw")
-
-[node name="StaticBody2D2" type="StaticBody2D" parent="."]
-position = Vector2(169.75, 85)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
-shape = SubResource("RectangleShape2D_ryguw")
-
 [connection signal="bite_started" from="player/rod" to="player/Camera2D" method="_on_rod_bite_started"]
 [connection signal="cast_started" from="player/rod" to="player/Camera2D" method="_on_cast_started"]
 [connection signal="reeling_finished" from="player/rod" to="player/Camera2D" method="_on_rod_reeling_finished"]
 [connection signal="reeling_started" from="player/rod" to="player/Camera2D" method="_on_reeling_started"]
+[connection signal="fish_caught" from="fishingMinigame" to="player/rod" method="_on_fishing_minigame_fish_caught"]
