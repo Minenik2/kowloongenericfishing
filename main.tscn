@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=4 uid="uid://ccyl48wej715s"]
+[gd_scene load_steps=39 format=4 uid="uid://ccyl48wej715s"]
 
 [ext_resource type="Texture2D" uid="uid://dne7smfeecg0g" path="res://art/tileset.png" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://dui8oveoikvf4" path="res://art/water.png" id="2_0xm2m"]
@@ -20,8 +20,12 @@
 [ext_resource type="Shader" uid="uid://5cgisi5vydlf" path="res://background.gdshader" id="15_cegan"]
 [ext_resource type="AudioStream" uid="uid://ce2qvox6ryb51" path="res://audio/hook_water.wav" id="15_getpj"]
 [ext_resource type="Texture2D" uid="uid://cip4jb5o3tlv7" path="res://art/fog.png" id="15_yaehf"]
+[ext_resource type="Texture2D" uid="uid://cq2qaablnducu" path="res://art/fish/fish.png" id="17_1u8w0"]
+[ext_resource type="AudioStream" uid="uid://bp4q8g0leuihf" path="res://audio/step.wav" id="18_d13ii"]
 [ext_resource type="PackedScene" uid="uid://b4ob3fc0v04dc" path="res://fishing_minigame.tscn" id="20_82xsv"]
 [ext_resource type="Texture2D" uid="uid://hcjbxbbrgsf7" path="res://art/Kowloon.png" id="22_ryguw"]
+[ext_resource type="Script" uid="uid://x2jcu4ub24a1" path="res://sign.gd" id="25_0odxb"]
+[ext_resource type="Shader" uid="uid://cf7ubkd4nlhvp" path="res://text.gdshader" id="25_lswn8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_82xsv"]
 shader = ExtResource("15_cegan")
@@ -49,6 +53,21 @@ shader_parameter/wave_strength = 5.0
 shader_parameter/wave_speed = 1.0
 shader_parameter/wave_frequency = 20.0
 
+[sub_resource type="Animation" id="Animation_d13ii"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="Animation" id="Animation_ryguw"]
 resource_name = "idle"
 length = 3.4
@@ -64,21 +83,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 0, 1, 0, 1, 2, 3]
-}
-
-[sub_resource type="Animation" id="Animation_d13ii"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
 }
 
 [sub_resource type="Animation" id="Animation_1u8w0"]
@@ -117,6 +121,13 @@ shader_parameter/intensity = 0.4
 shader_parameter/fog_color = Color(0.631373, 0.00784314, 0.0470588, 0.27451)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ryguw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a6jrf"]
+shader = ExtResource("25_lswn8")
+shader_parameter/flicker_intensity = 0.356
+shader_parameter/flicker_speed = 6.585
+shader_parameter/outline_threshold = 0.0
+shader_parameter/monochrome_flicker = true
 
 [node name="Node2D" type="Node2D"]
 scale = Vector2(4, 4)
@@ -308,6 +319,11 @@ volume_db = -5.0
 stream = ExtResource("15_getpj")
 volume_db = -3.0
 
+[node name="fish" type="Sprite2D" parent="player/rod/bobber"]
+visible = false
+position = Vector2(0, 21)
+texture = ExtResource("17_1u8w0")
+
 [node name="CastBar" type="ProgressBar" parent="player/rod"]
 visible = false
 texture_filter = 1
@@ -322,6 +338,10 @@ show_percentage = false
 position = Vector2(0.75, -8.75)
 position_smoothing_speed = 2.0
 script = ExtResource("9_kek77")
+
+[node name="step" type="AudioStreamPlayer" parent="player"]
+stream = ExtResource("18_d13ii")
+volume_db = -6.0
 
 [node name="LetterboxLayer" type="CanvasLayer" parent="."]
 script = ExtResource("10_4c57u")
@@ -379,7 +399,29 @@ position = Vector2(169.75, 85)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
 shape = SubResource("RectangleShape2D_ryguw")
 
+[node name="Label" type="Label" parent="."]
+top_level = true
+texture_filter = 1
+material = SubResource("ShaderMaterial_a6jrf")
+offset_left = -45.0
+offset_top = 194.0
+offset_right = 80.0
+offset_bottom = 284.0
+scale = Vector2(2, 2)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = -5
+theme_override_font_sizes/font_size = 9
+text = "KOWLOON 
+GENERIC 
+FISHING"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("25_0odxb")
+
 [connection signal="bite_started" from="player/rod" to="player/Camera2D" method="_on_rod_bite_started"]
 [connection signal="cast_started" from="player/rod" to="player/Camera2D" method="_on_cast_started"]
 [connection signal="reeling_finished" from="player/rod" to="player/Camera2D" method="_on_rod_reeling_finished"]
+[connection signal="reeling_finished" from="player/rod" to="Label" method="_on_rod_reeling_finished"]
 [connection signal="reeling_started" from="player/rod" to="player/Camera2D" method="_on_reeling_started"]

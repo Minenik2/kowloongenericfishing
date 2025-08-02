@@ -62,6 +62,7 @@ func _process(delta):
 		# When close enough to rod, reset
 		if bobber.position.distance_to(target) < 2:
 			if caught: $bobber/hook_catch.play()
+			$bobber/fish.hide()
 			reeling_finished.emit()
 			reset_fishing()
 		return  # Stop all other logic during reeling
@@ -147,6 +148,7 @@ func try_catch():
 		
 		if success:
 			print("You caught something!")
+			$bobber/fish.show()
 			fish_on_line = false
 			caught = true
 			start_reeling_in()

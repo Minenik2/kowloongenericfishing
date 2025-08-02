@@ -30,6 +30,7 @@ window/stretch/scale_mode="integer"
 [gui]
 
 theme/custom="uid://b6r0bi6fy1o78"
+theme/custom_font="uid://cgg0mf1u6uqw5"
 
 [input]
 

@@ -7,7 +7,8 @@ extends CharacterBody2D
 var is_facing_right := true
 
 func _physics_process(delta):
-	handle_movement(delta)
+	if not fishing_rod.is_casting or fishing_rod.is_charging:
+		handle_movement(delta)
 
 func _unhandled_input(event):
 	if event.is_action_pressed("interact"):
@@ -25,6 +26,8 @@ func handle_movement(delta):
 	if velocity.x == 0:
 		$AnimationPlayer.play("idle")
 	else:
+		if !$step.playing:
+			$step.play()
 		$AnimationPlayer.play("walk")
 
 	if Input.is_action_pressed("left"):
