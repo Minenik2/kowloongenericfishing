@@ -1,3 +1,13 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+export/index.apple-touch-icon.png
+export/index.audio.position.worklet.js
+export/index.audio.worklet.js
+export/index.html
+export/index.icon.png
+export/index.js
+export/index.pck
+export/index.png
+export/index.wasm
+export_presets.cfg
