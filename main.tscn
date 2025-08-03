@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=4 uid="uid://ccyl48wej715s"]
+[gd_scene load_steps=44 format=4 uid="uid://ccyl48wej715s"]
 
 [ext_resource type="Texture2D" uid="uid://dne7smfeecg0g" path="res://art/tileset.png" id="1_ig7tw"]
 [ext_resource type="Texture2D" uid="uid://dui8oveoikvf4" path="res://art/water.png" id="2_0xm2m"]
@@ -21,9 +21,14 @@
 [ext_resource type="AudioStream" uid="uid://ce2qvox6ryb51" path="res://audio/hook_water.wav" id="15_getpj"]
 [ext_resource type="Texture2D" uid="uid://cip4jb5o3tlv7" path="res://art/fog.png" id="15_yaehf"]
 [ext_resource type="Texture2D" uid="uid://cq2qaablnducu" path="res://art/fish/fish.png" id="17_1u8w0"]
+[ext_resource type="Script" uid="uid://d1d07vmmmx74n" path="res://fish_visuals.gd" id="18_a6jrf"]
 [ext_resource type="AudioStream" uid="uid://bp4q8g0leuihf" path="res://audio/step.wav" id="18_d13ii"]
+[ext_resource type="Texture2D" uid="uid://dt3kpbxsv3sm8" path="res://art/fish/carp.png" id="19_kq58d"]
 [ext_resource type="PackedScene" uid="uid://b4ob3fc0v04dc" path="res://fishing_minigame.tscn" id="20_82xsv"]
+[ext_resource type="Texture2D" uid="uid://cpx8q2cpq8jlf" path="res://art/fish/eyefish.png" id="20_seu75"]
+[ext_resource type="Texture2D" uid="uid://ch24600e3oy72" path="res://art/fish/weet.png" id="21_htxhm"]
 [ext_resource type="Texture2D" uid="uid://hcjbxbbrgsf7" path="res://art/Kowloon.png" id="22_ryguw"]
+[ext_resource type="Texture2D" uid="uid://ck5hcfhvsn6b" path="res://art/fish/bigf.png" id="22_seu75"]
 [ext_resource type="Script" uid="uid://x2jcu4ub24a1" path="res://sign.gd" id="25_0odxb"]
 [ext_resource type="Shader" uid="uid://cf7ubkd4nlhvp" path="res://text.gdshader" id="25_lswn8"]
 
@@ -320,9 +325,10 @@ stream = ExtResource("15_getpj")
 volume_db = -3.0
 
 [node name="fish" type="Sprite2D" parent="player/rod/bobber"]
-visible = false
 position = Vector2(0, 21)
 texture = ExtResource("17_1u8w0")
+script = ExtResource("18_a6jrf")
+fish_textures = Array[Texture2D]([ExtResource("19_kq58d"), ExtResource("20_seu75"), ExtResource("17_1u8w0"), ExtResource("21_htxhm"), ExtResource("22_seu75")])
 
 [node name="CastBar" type="ProgressBar" parent="player/rod"]
 visible = false
@@ -425,3 +431,4 @@ script = ExtResource("25_0odxb")
 [connection signal="reeling_finished" from="player/rod" to="player/Camera2D" method="_on_rod_reeling_finished"]
 [connection signal="reeling_finished" from="player/rod" to="Label" method="_on_rod_reeling_finished"]
 [connection signal="reeling_started" from="player/rod" to="player/Camera2D" method="_on_reeling_started"]
+[connection signal="fish_caught" from="fishingMinigame" to="player/rod/bobber/fish" method="_on_fishing_minigame_fish_caught"]

@@ -6,7 +6,8 @@ var normal_fish_lines = [
 	"A gentle tug. Nothing more.",
 	"Just a fish... probably.",
 	"YOU ARE NOT ALONE",
-	"It saw you first."
+	"It saw you first.",
+	"NO ONE ESCAPES"
 ]
 
 func _on_rod_reeling_finished() -> void:
